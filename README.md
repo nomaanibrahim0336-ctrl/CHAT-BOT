@@ -7,10 +7,10 @@ A runnable starting point for the omnichannel conversational AI chatbot describe
 - **Web chat widget** (`public/widget.html`) talking to `POST /api/chat`.
 - **Orchestrator** (`src/orchestrator`) that: logs with PII masked, runs guardrail checks (explicit human request, anger keywords, sensitive account actions), retrieves relevant KB articles, and calls Claude.
 - **RAG knowledge base** (`src/rag/knowledgeBase.js`) — simple keyword-overlap retrieval over markdown articles in `data/kb/`. Swap this module for Pinecone/Weaviate + real embeddings without touching the orchestrator.
-- **DeepSeek integration with tool calling** (`src/llm/deepseek.js`, `src/tools/functions.js`) — explicit JSON schemas for `get_order_status`, `search_products`, `escalate_to_human` (no free-form JSON guessing). Uses the OpenAI SDK against DeepSeek's OpenAI-compatible API.
+- **Gemini integration with tool calling** (`src/llm/gemini.js`, `src/tools/functions.js`) — explicit JSON schemas for `get_order_status`, `search_products`, `escalate_to_human` (no free-form JSON guessing). Uses the `@google/generative-ai` SDK.
 - **Mocked OMS/Shopify data** (`src/integrations/mockStore.js`) — replace with real Shopify Admin API / OMS calls.
 - **Messenger & Instagram webhook stubs** (`src/routes/meta.js`) — verification handshake + message normalization wired up; actual `sendReply` to the Graph API is a no-op stub until `META_PAGE_ACCESS_TOKEN` is set.
-- **Degraded-mode fallback** — if `DEEPSEEK_API_KEY` is missing or the LLM call fails, the bot replies with the static fallback message from the spec instead of crashing.
+- **Degraded-mode fallback** — if `GEMINI_API_KEY` is missing or the LLM call fails, the bot replies with the static fallback message from the spec instead of crashing.
 
 ## Not yet implemented (see spec sections 2.2 P1, 6, 7)
 
@@ -23,7 +23,7 @@ A runnable starting point for the omnichannel conversational AI chatbot describe
 ```bash
 npm install
 cp .env.example .env
-# add your DEEPSEEK_API_KEY to .env
+# add your GEMINI_API_KEY to .env
 npm start
 ```
 
@@ -39,7 +39,7 @@ src/
   channels/normalize.js   Per-channel payload -> {source, userId, text}
   orchestrator/           Guardrails, history, RAG+LLM coordination
   rag/knowledgeBase.js    Article loader + retrieval (replace with vector DB)
-  llm/deepseek.js          DeepSeek chat + tool-calling loop
+  llm/gemini.js            Gemini chat + tool-calling loop
   tools/functions.js       Tool schemas + dispatcher
   integrations/mockStore.js Mocked order/product data (replace with Shopify/OMS)
 data/kb/                  Sample FAQ articles (shipping, returns, payments, warranty)
