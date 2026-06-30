@@ -15,9 +15,14 @@ app.use('/api', webRoutes);
 app.use('/webhooks', metaRoutes);
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
+app.get('/', (req, res) => res.redirect('/widget.html'));
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Chatbot server listening on http://localhost:${PORT}`);
-  console.log(`Web widget demo: http://localhost:${PORT}/widget.html`);
-});
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Chatbot server listening on http://localhost:${PORT}`);
+    console.log(`Web widget demo: http://localhost:${PORT}/widget.html`);
+  });
+}
+
+module.exports = app;
