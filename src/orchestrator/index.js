@@ -1,5 +1,5 @@
 const kb = require('../rag/knowledgeBase');
-const llm = require('../llm/claude');
+const llm = require('../llm/deepseek');
 const history = require('./history');
 const { shouldEscalate, maskPII } = require('./guardrails');
 
